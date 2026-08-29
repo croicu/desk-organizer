@@ -1,14 +1,21 @@
 # geo-organizer
 
-geo-organizer is the organizer tool for the geo ecosystem's AI tooling. It generates Claude Code skills, agent definitions, and MCP servers that are consumed by geo-builder and geo-browser.
+geo-organizer is the authoring tool for the geo ecosystem's AI tooling: Claude Code skills, agent
+definitions, and MCP servers consumed by `geo-builder`, `geo-browser`, and future geo repos. It is
+an authoring tool, not a runtime dependency — artifacts are generated here, delivered into a
+consumer's `.claude/` directory, and committed into that repo.
 
-Consumers run independently. Generated artifacts are copied into each target repo's .claude/ directory and version with that repo. The organizer repo does not need to be present — or even exist on the same machine — for a consumer to use what it produced.
+| Type | Format | Delivered to | Executable |
+|---|---|---|---|
+| Skill | `SKILL.md` + optional bundled scripts | `<consumer>/.claude/skills/` | no |
+| Agent | agent definition markdown | `<consumer>/.claude/agents/` | no |
+| MCP server | Python package | installed in consumer environment | yes |
 
-This repo owns: skill and agent organizer, MCP server implementation, the conventions for deriving invariants from a producer/consumer boundary.
+Once delivered, a consumer runs standalone — geo-organizer does not need to exist on the same
+machine, and nothing here is imported, invoked, or resolved at consumer runtime.
 
-This repo does not: execute skills, read consumer source at runtime, or participate in any consumer's build.
-
-Python. Markdown artifacts, packaged distribution for anything executable.
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for ownership boundaries, the distribution
+model, and repository layout.
 
 ---
 

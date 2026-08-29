@@ -4,18 +4,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Mission
 
-geo-organizer is the organizer tool for the geo ecosystem's AI tooling. It generates Claude Code
-skills, agent definitions, and MCP servers that are consumed by geo-builder and geo-browser.
+geo-organizer is the authoring tool for the geo ecosystem's AI tooling: Claude Code skills, agent
+definitions, and MCP servers consumed by `geo-builder`, `geo-browser`, and future geo repos. It is
+an authoring tool, not a runtime dependency — artifacts are generated here, delivered into a
+consumer's `.claude/` directory, and committed into that repo. From that point the consumer runs
+standalone: geo-organizer does not need to exist on the same machine, and nothing here is
+imported, invoked, or resolved at consumer runtime.
 
-Consumers run independently. Generated artifacts are copied into each target repo's `.claude/`
-directory and version with that repo. The organizer repo does not need to be present — or even
-exist on the same machine — for a consumer to use what it produced.
+Skills and agents are markdown, delivered as files. MCP servers are the only executable artifact,
+distributed as installable Python packages rather than path-referenced source.
 
-This repo owns: skill and agent organizer, MCP server implementation, the conventions for
-deriving invariants from a producer/consumer boundary.
+A stale skill is worse than no skill — it encodes invariants that no longer hold, with the
+model's confidence behind them. Keeping generated artifacts versioned with the repo they describe
+(not with this one) is what keeps them from drifting out of date unnoticed.
 
-This repo does not: execute skills, read consumer source at runtime, or participate in any
-consumer's build.
+This repo owns: skill and agent authoring, MCP server implementation, and the conventions for
+deriving invariants from the producer/consumer boundary. Consumers own their `.claude/` contents
+once delivered — when to update, and whether to accept a generated artifact at all.
+
+This repo does not: execute skills or agents, read consumer source at runtime, or participate in
+any consumer's build.
+
+See `docs/ARCHITECTURE.md` for the distribution model, artifact types, repository layout, and
+design principles.
 
 ## Template Sync
 
