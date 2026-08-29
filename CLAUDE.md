@@ -4,12 +4,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Mission
 
-__mission__
+geo-organizer is the organizer tool for the geo ecosystem's AI tooling. It generates Claude Code
+skills, agent definitions, and MCP servers that are consumed by geo-builder and geo-browser.
+
+Consumers run independently. Generated artifacts are copied into each target repo's `.claude/`
+directory and version with that repo. The organizer repo does not need to be present — or even
+exist on the same machine — for a consumer to use what it produced.
+
+This repo owns: skill and agent organizer, MCP server implementation, the conventions for
+deriving invariants from a producer/consumer boundary.
+
+This repo does not: execute skills, read consumer source at runtime, or participate in any
+consumer's build.
 
 ## Template Sync
 
 - **Source**: [croicu/tpl-py](https://github.com/croicu/tpl-py)
-- **Synced to**: <!-- SYNCED_TO --> (set by `tasks/repo_setup.md` at instantiation time; left
+- **Synced to**: 2026-07-30T12:00:01Z (set by `tasks/repo_setup.md` at instantiation time; left
   unset in `tpl-py`'s own master copy of this file, since the source has nothing to sync
   against)
 
@@ -160,7 +171,7 @@ After any change that affects the public interface, CLI, or file formats, update
 pip install -e ".[dev]"
 
 # Run
-__project_name__
+geo-organizer
 
 # Lint
 ruff check src/ tests/
@@ -185,7 +196,7 @@ pytest tests/unit/test_foo.py::test_bar   # single test
 
 ## Logging
 
-- **Use `Logger`** (`from __package_name__.diagnostics import Logger`) — not bare `print()`.
+- **Use `Logger`** (`from geo_organizer.diagnostics import Logger`) — not bare `print()`.
 - **All features log success and errors** — no silent success, no swallowed errors.
 - **Message length by severity**:
   - **Success (info)** — short: feature started, feature ended.
@@ -219,11 +230,14 @@ pytest tests/unit/test_foo.py::test_bar   # single test
 ## New Task
 
 ## Pending Tasks
-- **File**: [Repo Setup](tasks/repo_setup.md)
-- **Status**: Implementation
-- **Key Context**: This repo was generated from a template and still contains placeholder tokens. Replace them per that file's instructions, then delete it and this entry.
+
+None.
 
 ## Completed Tasks
+- **Repo Setup** — instantiated from `tpl-py` as `geo-organizer`: replaced all placeholder
+  tokens, renamed `src/__package_name__/` to `src/geo_organizer/`, verified
+  `pip install -e ".[dev]"` / `ruff check` / `ruff format` / `pytest` / CLI run all pass clean,
+  set `Synced to` to `2026-07-30T12:00:01Z`, created the `status:*` and `cross-repo` labels.
 - **Backport DI-for-testability and process learnings from quant-scratch** — [issue #3](https://github.com/croicu/tpl-py/issues/3)
 - **Backport public-surface, acyclic-dependency, and cross-repo learnings from quant-data** —
   [issue #4](https://github.com/croicu/tpl-py/issues/4). Architecture conventions 7-9 (namespace

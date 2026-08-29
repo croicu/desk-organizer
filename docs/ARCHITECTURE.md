@@ -1,10 +1,10 @@
 # ARCHITECTURE.md
 
-Modules, data flow, and contracts for `__project_name__`.
+Modules, data flow, and contracts for `geo-organizer`.
 
 ## Modules
 
-<!-- One entry per module under src/__package_name__/: what it owns, what it depends on. -->
+<!-- One entry per module under src/geo_organizer/: what it owns, what it depends on. -->
 
 ## Data flow
 
