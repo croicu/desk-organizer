@@ -151,6 +151,15 @@ exception even within the family: an issue Claude opened itself mid-task (e.g. a
 `status:implementation` issue opened while executing a planned/ad-hoc task in the same session)
 can be closed directly, since Claude is the opener there.
 
+**Verify before closing a self-opened cross-repo issue.** The exception above is a license to
+close, not a license to trust the fix-author's summary comment at face value. Before closing:
+fetch/pull the consumer repo's actual default branch (not just read the PR description) and check
+the real file contents against what the issue originally reported. If a linked PR is mentioned but
+its merge status wasn't confirmed, check that too. If verification finds the fix incomplete or
+something still missing, don't close — leave a comment on the issue describing the specific gap
+and relabel it back to `status:implementation` (removing `status:ready-for-integration` /
+`status:ready-to-submit` if present) instead.
+
 **If an issue ever comes from a genuine external contributor** (not the repo owner or one of their
 own other repos), this whole rule doesn't apply — follow normal GitHub OSS etiquette instead
 (auto-close via a merged PR's `Closes #N` is fine, maintainer discretion applies). Revisit this
