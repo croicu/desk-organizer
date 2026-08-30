@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 
 from mcp.server.mcpserver import MCPServer
 
@@ -46,6 +47,16 @@ def notify(message: str, title: str | None = None, priority: int = 3) -> str:
 
 
 def main() -> None:
+    if os.environ.get("DESK_PAGER_DEBUGPY") == "1":
+        # Opt-in only: this process is normally launched by the MCP host (Claude Code), not by a
+        # debugger, so there's nothing to attach to unless explicitly requested. Blocks startup
+        # until VS Code's "Python: Attach to desk-pager" config attaches, so the very first tool
+        # call — not just a later one — can hit a breakpoint.
+        import debugpy
+
+        debugpy.listen(5678)
+        debugpy.wait_for_client()
+
     mcp.run()
 
 

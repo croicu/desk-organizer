@@ -18,6 +18,16 @@
       "args": ["-v", "-s", "-x"],
       "console": "integratedTerminal",
       "justMyCode": false
+    },
+    {
+      "name": "Python: Attach to desk-pager",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+      },
+      "justMyCode": true
     }
   ],
   "inputs": []

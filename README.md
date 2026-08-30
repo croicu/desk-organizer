@@ -43,3 +43,16 @@ ruff format src/ tests/
 pytest
 pytest tests/unit/test_foo.py::test_bar   # single test
 ```
+
+## Debugging an MCP server
+
+The pager MCP server is normally launched by the MCP host (Claude Code), not by a debugger, so a
+breakpoint needs an attach rather than a launch:
+
+1. In `.mcp.json`, temporarily add `"DESK_PAGER_DEBUGPY": "1"` to the `pager` entry's `env`, then
+   reconnect the `pager` MCP server so it relaunches with that variable set. The process will block
+   at startup, waiting for a debugger.
+2. Run the **Python: Attach to desk-pager** launch config in VS Code. Once attached, the server
+   continues; a breakpoint in `notify()` now hits on the next tool call.
+3. Revert the `.mcp.json` change when done — leaving `DESK_PAGER_DEBUGPY` set makes every future
+   `pager` connection hang until a debugger attaches.

@@ -20,6 +20,7 @@ desk-pager = "desk_organizer.mcp.pager.server:main"
 dev = [
     "pytest>=8.3",
     "ruff>=0.11",
+    "debugpy>=1.8",
     "desk-organizer[pager]",
 ]
 pager = [
