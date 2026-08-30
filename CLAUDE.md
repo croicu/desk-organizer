@@ -267,6 +267,9 @@ pytest tests/unit/test_foo.py::test_bar   # single test
 
 ## New Task
 
+- [Rename to desk-organizer](tasks/rename-to-desk-organizer.md) — brainstorm stage; run in the
+  fresh clone once the GitHub repo itself has been renamed.
+
 ## Pending Tasks
 
 None.
