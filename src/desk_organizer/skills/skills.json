@@ -1,0 +1,10 @@
+{
+  "skills": {
+    "expose-gateway-method": {
+      "applies_to": ["geo-builder"]
+    },
+    "call-gateway-method": {
+      "applies_to": ["geo-browser"]
+    }
+  }
+}

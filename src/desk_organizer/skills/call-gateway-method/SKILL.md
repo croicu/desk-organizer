@@ -1,5 +1,5 @@
 ---
-name: geo-browser-call-gateway-method
+name: call-gateway-method
 description: Use when adding TypeScript-side support for a geo-builder gateway method or event — mirroring a new/changed src/geo_builder/api.py entry into src/api.ts, calling it, or subscribing to an event. Triggers on requests like "call the new geo-builder API from geo-browser", "mirror this Python API method in api.ts", "subscribe to a gateway event", "add design-mode support for X". Encodes the api.ts mirroring convention and the mode-selection-at-composition pattern that keeps browse/design branching out of call sites — the actual answer to "how should rendering degrade in browse mode."
 ---
 
@@ -11,7 +11,7 @@ gateway-backed code so that distinction never has to be checked ad hoc at a call
 
 The Python-side contract this mirrors is defined in `src/geo_builder/api.py` and documented in
 `docs/MESSAGING.md`; defining/registering the Python side is a separate skill
-(`geo-builder-expose-gateway-method`) owned by that repo. This skill only covers the TypeScript
+(`expose-gateway-method`) owned by that repo. This skill only covers the TypeScript
 side: mirroring the contract and calling it correctly.
 
 ## 1. Mirror the contract in `src/api.ts`

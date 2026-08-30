@@ -2,7 +2,7 @@
   "mcpServers": {
     "pager": {
       "type": "stdio",
-      "command": "geo-pager",
+      "command": ".venv/Scripts/desk-pager.exe",
       "args": [],
       "env": {}
     }

@@ -1,5 +1,5 @@
 ---
-name: geo-builder-expose-gateway-method
+name: expose-gateway-method
 description: Use when adding a new method or event to geo-builder's design-mode gateway — the Python↔JavaScript message bridge that lets an embedded geo-browser (?design=1) call into geo-builder and receive events back. Triggers on requests like "add a new designer API", "expose a method to geo-browser", "let the browser call/edit X", "add a gateway event". Encodes the exact multi-file procedure (api.py, designer/host.py, docs/MESSAGING.md) and the MethodResult/error-code conventions that are easy to miss or apply inconsistently.
 ---
 
@@ -15,7 +15,7 @@ are not symmetric — pick the right one before writing any code:
   when geo-builder needs to push a change to the browser without being asked.
 
 Both directions are defined once in `src/geo_builder/api.py` and mirrored 1:1 into geo-browser's
-`src/api.ts` — that mirroring is a separate skill (`geo-browser-call-gateway-method`) owned by the
+`src/api.ts` — that mirroring is a separate skill (`call-gateway-method`) owned by the
 other repo. This skill only covers the geo-builder side: defining the contract and implementing
 the handler.
 
@@ -79,6 +79,7 @@ Everything is wired inside `_register_designer_handlers`. For a method:
 ```python
 api.define_method(REMOVE_USER_POINT_ID, RemoveUserPointInput, RemoveUserPointOutput)
 
+
 def on_remove_user_point(data: RemoveUserPointInput) -> RemoveUserPointOutput:
     area = ...  # look up whatever the handler needs
     if area is None:
@@ -87,6 +88,7 @@ def on_remove_user_point(data: RemoveUserPointInput) -> RemoveUserPointOutput:
     # ... do the work ...
 
     return MethodResult(RemoveUserPointOutput(error=OK))
+
 
 api.register(REMOVE_USER_POINT_ID, on_remove_user_point)
 ```

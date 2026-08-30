@@ -17,9 +17,9 @@ class CliArguments:
 
 def parse_args(argv: list[str]) -> CliArguments:
     parser = argparse.ArgumentParser(
-        prog="geo-organizer",
-        usage="geo-organizer [--debug]",
-        description="Organizer tool for the geo ecosystem's AI tooling — generates Claude Code skills, agents, and MCP servers.",
+        prog="desk-organizer",
+        usage="desk-organizer [--debug]",
+        description="Personal authoring hub for AI tooling — Claude Code skills, agents, and MCP servers.",
     )
 
     parser.add_argument(
@@ -40,7 +40,7 @@ def main(argv: list[str] | None = None, settings_path: Path | None = None) -> in
     try:
         settings = Settings.load() if settings_path is None else Settings.load(path=settings_path)
     except AppError as error:
-        print(f"geo-organizer: error: {error}", file=sys.stderr)
+        print(f"desk-organizer: error: {error}", file=sys.stderr)
         return 1
 
     debug = settings.debug or arguments.debug
@@ -53,13 +53,13 @@ def main(argv: list[str] | None = None, settings_path: Path | None = None) -> in
         )
     )
     try:
-        Logger.info("geo-organizer: started.")
-        Logger.info("geo-organizer: completed.")
+        Logger.info("desk-organizer: started.")
+        Logger.info("desk-organizer: completed.")
         return 0
     except AppError as error:
         if debug:
             raise
-        print(f"geo-organizer: error: {error}", file=sys.stderr)
+        print(f"desk-organizer: error: {error}", file=sys.stderr)
         return 1
     finally:
         Logger.set_logger(None)

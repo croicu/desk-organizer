@@ -1,11 +1,11 @@
 # ARCHITECTURE.md
 
-Modules, data flow, and contracts for `geo-organizer`. See `CLAUDE.md`'s `## Mission` for the
+Modules, data flow, and contracts for `desk-organizer`. See `CLAUDE.md`'s `## Mission` for the
 one-paragraph summary this document expands on.
 
 ## Ownership
 
-### geo-organizer owns
+### desk-organizer owns
 
 - skill authoring (`SKILL.md` content and structure)
 - agent definitions
@@ -22,7 +22,7 @@ one-paragraph summary this document expands on.
 ## Distribution model
 
 ```text
-geo-organizer
+desk-organizer
 → generate artifact
 → deliver into <consumer>/.claude/
 → commit in the consumer repo
@@ -54,15 +54,20 @@ Skills and agents are markdown. Only MCP servers involve code, which is why this
 
 ## Repository structure
 
-MCP server code lives under `src/geo_organizer/` per this template's single-package convention
-(Architecture conventions 1/7 in `CLAUDE.md`). Skill and agent content is markdown, not code, so
-it lives at the repo root rather than under `src/`.
+MCP server code and skill content both live under `src/desk_organizer/`, per this template's
+single-package convention (Architecture conventions 1/7 in `CLAUDE.md`). Skills are markdown, not
+code, but they're packaged data all the same: [issue #2](https://github.com/croicu/desk-organizer/issues/2)'s
+planned `desk-organizer pull-skills <target-repo>` CLI command needs to read a skill's content from
+the *installed* package, not from a loose repo-root directory a consumer has no access to — so
+skill content ships as `package-data` (see `pyproject.toml`'s `[tool.setuptools.package-data]`)
+alongside the code that will eventually read it. Agent definitions have no content yet, but the
+same reasoning will apply once they do.
 
 ```text
-geo-organizer/
+desk-organizer/
   pyproject.toml
   src/
-    geo_organizer/
+    desk_organizer/
       cli.py
       diagnostics.py
       settings.py
@@ -71,17 +76,23 @@ geo-organizer/
       contracts.py
       mcp/
         <server-name>/
-  skills/
-    <skill-name>/
-      SKILL.md
-  agents/
-    <agent-name>.md
+      skills/
+        skills.json
+        <skill-name>/
+          SKILL.md
+      agents/
+        <agent-name>.md
   tests/
 ```
 
+`skills.json` declares which consumer repo(s) each skill applies to (see `docs/PROTOCOL.md`) — a
+flat directory of skills plus this one manifest, rather than grouping skills into per-repo
+subdirectories, so a skill can name more than one applicable repo without having to live in more
+than one place.
+
 ## Modules
 
-<!-- One entry per module under src/geo_organizer/: what it owns, what it depends on. -->
+<!-- One entry per module under src/desk_organizer/: what it owns, what it depends on. -->
 
 ## Data flow
 

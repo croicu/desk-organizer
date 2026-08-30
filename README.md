@@ -1,9 +1,14 @@
-# geo-organizer
+# desk-organizer
 
-geo-organizer is the authoring tool for the geo ecosystem's AI tooling: Claude Code skills, agent
-definitions, and MCP servers consumed by `geo-builder`, `geo-browser`, and future geo repos. It is
-an authoring tool, not a runtime dependency — artifacts are generated here, delivered into a
-consumer's `.claude/` directory, and committed into that repo.
+desk-organizer is a personal authoring hub for AI tooling: Claude Code skills, agent definitions,
+and MCP servers for whichever of the user's own projects need them. It is an authoring tool, not a
+runtime dependency — artifacts are generated here, delivered into a consumer's `.claude/`
+directory, and committed into that repo.
+
+Authoring for the geo-family repos (`geo-builder`, `geo-browser`) is what this repo started as, and
+it's still a live capability — but it's one capability among several now, not the whole mission.
+Non-geo work authored here for its own sake (e.g. `desk-pager`, a general-purpose paging MCP
+server) is equally in scope.
 
 | Type | Format | Delivered to | Executable |
 |---|---|---|---|
@@ -11,7 +16,7 @@ consumer's `.claude/` directory, and committed into that repo.
 | Agent | agent definition markdown | `<consumer>/.claude/agents/` | no |
 | MCP server | Python package | installed in consumer environment | yes |
 
-Once delivered, a consumer runs standalone — geo-organizer does not need to exist on the same
+Once delivered, a consumer runs standalone — desk-organizer does not need to exist on the same
 machine, and nothing here is imported, invoked, or resolved at consumer runtime.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for ownership boundaries, the distribution

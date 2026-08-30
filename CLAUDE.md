@@ -4,12 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Mission
 
-geo-organizer is the authoring tool for the geo ecosystem's AI tooling: Claude Code skills, agent
-definitions, and MCP servers consumed by `geo-builder`, `geo-browser`, and future geo repos. It is
-an authoring tool, not a runtime dependency — artifacts are generated here, delivered into a
-consumer's `.claude/` directory, and committed into that repo. From that point the consumer runs
-standalone: geo-organizer does not need to exist on the same machine, and nothing here is
-imported, invoked, or resolved at consumer runtime.
+desk-organizer is a personal authoring hub for AI tooling: Claude Code skills, agent definitions,
+and MCP servers for whichever of the user's own projects need them. It is an authoring tool, not a
+runtime dependency — artifacts are generated here, delivered into a consumer's `.claude/`
+directory, and committed into that repo. From that point the consumer runs standalone:
+desk-organizer does not need to exist on the same machine, and nothing here is imported, invoked,
+or resolved at consumer runtime.
+
+Authoring for the geo-family repos (`geo-builder`, `geo-browser`) is what this repo started as, and
+it's still a live capability — but it's one capability among several now, not the whole mission.
+Non-geo work authored here for its own sake, standing on its own regardless of the geo family (e.g.
+`desk-pager`, a general-purpose paging MCP server), is equally in scope. What unifies the repo's
+work is the authoring model below, not membership in any one project family.
 
 Skills and agents are markdown, delivered as files. MCP servers are the only executable artifact,
 distributed as installable Python packages rather than path-referenced source.
@@ -80,6 +86,12 @@ real data/API contract with another repo in your ecosystem (a producer/consumer 
 just "both repos happen to exist"). Same judgment call as the multi-package case in Architecture
 convention 7: build this when the need is real, don't pre-build it. Retrofit is cheap — this is
 process guidance, not code.
+
+This repo already has such a relationship, with the geo-family repos (`geo-builder`, `geo-browser`)
+it originally authored for — but the rules below apply to any consumer repo, geo-family or not.
+Don't read "cross-repo" as implicitly geo-scoped: as desk-organizer takes on non-geo authoring work
+(e.g. `desk-pager`), a consumer relationship with an unrelated repo follows the same rules here,
+with no separate section needed for it.
 
 **Placement rule**: a cross-repo issue lives in whichever repo owns the actionable follow-up, not
 necessarily where the need originated:
@@ -208,7 +220,7 @@ After any change that affects the public interface, CLI, or file formats, update
 pip install -e ".[dev]"
 
 # Run
-geo-organizer
+desk-organizer
 
 # Lint
 ruff check src/ tests/
@@ -233,7 +245,7 @@ pytest tests/unit/test_foo.py::test_bar   # single test
 
 ## Logging
 
-- **Use `Logger`** (`from geo_organizer.diagnostics import Logger`) — not bare `print()`.
+- **Use `Logger`** (`from desk_organizer.diagnostics import Logger`) — not bare `print()`.
 - **All features log success and errors** — no silent success, no swallowed errors.
 - **Message length by severity**:
   - **Success (info)** — short: feature started, feature ended.
@@ -265,16 +277,40 @@ pytest tests/unit/test_foo.py::test_bar   # single test
 - **Specific settings override generic ones on scope overlap** — when two configuration knobs can both influence the same outcome, the more specific/targeted one wins wherever they'd otherwise disagree, not the more generic/blanket one; the generic one only falls back into play when the specific one was left at its implicit default. Origin case: `settings.json`'s `logLevel` (a targeted verbosity control) vs. `debug` (a blanket flag) both used to influence the console log-category default, with `debug` winning outright — so setting `logLevel: "verbose"` alone did nothing, silently muted by `debug`'s separate default (see the Logging section above for the resulting behavior). Apply this whenever a new settings key's effect could overlap with an existing broader flag's — don't let a coarse toggle silently override an explicit, narrower setting the user actually configured.
 - **Prefer a static/class method over a module-level function when it conceptually belongs to a class** — if a function's job is really about one class's own data or responsibility (parsing the file format that class owns, a helper only that class's methods call), attach it to the class as a `@staticmethod`/`@classmethod` rather than leaving it as a same-module function sitting beside the class. A dangling module-level function reads as either free-standing utility code or, worse, gets imported directly by outside callers, leaking an implementation detail the class was supposed to encapsulate. Origin case: `settings.py`'s `Settings._load_payload` (the `settings.json`/`settings.local.json` merge) started as a free function beside `Settings`, got imported directly by `mcp/pager/config.py`, and was pulled inside the class as a private `@staticmethod` once that direct import was flagged as reaching past `Settings`'s own public surface (`Settings.section()`) into its internals.
 
-## New Task
-
-- [Rename to desk-organizer](tasks/rename-to-desk-organizer.md) — brainstorm stage; run in the
-  fresh clone once the GitHub repo itself has been renamed.
-
 ## Pending Tasks
 
 None.
 
 ## Completed Tasks
+- **Move skills into `src/` as package data; add `skills.json`** —
+  [issue #10](https://github.com/croicu/desk-organizer/issues/10). Moved `skills/` →
+  `src/desk_organizer/skills/` (git mv) now that the repo's scope covers more than skill-authoring
+  and skills need to be readable from the *installed* package for the planned `pull-skills` CLI
+  (issue #2, still postponed). Added `[tool.setuptools.package-data]` so `SKILL.md` files and the
+  manifest actually ship in the built package. Introduced `src/desk_organizer/skills/skills.json`
+  to declare which consumer repo(s) each skill applies to (`applies_to`, or the reserved
+  `"general"`) — a flat directory plus one central manifest, not per-repo subdirectories or
+  per-file frontmatter, so a multi-repo skill never needs to live in more than one place; schema
+  documented in `docs/PROTOCOL.md`. Dropped the now-redundant repo-name prefix from both existing
+  skills' directory names and `SKILL.md` frontmatter (`geo-builder-expose-gateway-method` →
+  `expose-gateway-method`, `geo-browser-call-gateway-method` → `call-gateway-method`) now that
+  `skills.json` carries that information explicitly. `docs/ARCHITECTURE.md` rewritten to match —
+  previously stated skills live at repo root "because they're markdown, not code," now explains
+  the package-data reasoning instead. `ruff format`/`ruff check`/`pytest` (19 tests) all pass clean
+  in the venv.
+- **Rename to desk-organizer** — [issue #9](https://github.com/croicu/desk-organizer/issues/9).
+  Renamed `src/geo_organizer/` → `src/desk_organizer/` and every reference across `pyproject.toml`,
+  `.vscode/launch.json`, `.mcp.json`, `CLAUDE.md`, `README.md`, `docs/ARCHITECTURE.md`,
+  `docs/PROTOCOL.md`, and the test suite; `geo-pager` → `desk-pager` (console script and `.mcp.json`
+  command). Prompted by real scope growth, not cosmetics — the Mission section was rewritten (not
+  find-and-replaced) to describe desk-organizer as a personal AI-tooling authoring hub, with
+  geo-family authoring (`geo-builder`, `geo-browser`) as one capability among several rather than
+  the whole mission; Cross-Repo Coordination's rules were clarified as not geo-scoped. This
+  environment's system Python couldn't write to its own site-packages at all (pre-existing,
+  unrelated to the rename) — worked around with a local `.venv`, which is now what `.mcp.json`'s
+  `pager` entry points at (`.venv/Scripts/desk-pager.exe`, a relative path so it works for anyone
+  who sets up their own `.venv` the same way) instead of relying on the console script being on
+  `PATH`. `ruff format`/`ruff check`/`pytest` (19 tests) all pass clean in the venv.
 - **Repo Setup** — instantiated from `tpl-py` as `geo-organizer`: replaced all placeholder
   tokens, renamed `src/__package_name__/` to `src/geo_organizer/`, verified
   `pip install -e ".[dev]"` / `ruff check` / `ruff format` / `pytest` / CLI run all pass clean,

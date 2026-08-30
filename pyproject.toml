@@ -3,9 +3,9 @@ requires = ["setuptools>=80"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "geo-organizer"
+name = "desk-organizer"
 version = "0.1.0"
-description = "Organizer tool for the geo ecosystem's AI tooling — generates Claude Code skills, agent definitions, and MCP servers consumed by geo-builder and geo-browser."
+description = "Personal authoring hub for AI tooling — generates Claude Code skills, agent definitions, and MCP servers for whichever of your projects need them."
 readme = "README.md"
 requires-python = ">=3.12"
 
@@ -13,19 +13,22 @@ dependencies = [
 ]
 
 [project.scripts]
-geo-organizer = "geo_organizer.cli:main"
-geo-pager = "geo_organizer.mcp.pager.server:main"
+desk-organizer = "desk_organizer.cli:main"
+desk-pager = "desk_organizer.mcp.pager.server:main"
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.3",
     "ruff>=0.11",
-    "geo-organizer[pager]",
+    "desk-organizer[pager]",
 ]
 pager = [
     "mcp>=2,<3",
     "requests>=2.31",
 ]
+
+[tool.setuptools.package-data]
+desk_organizer = ["skills/**/*.md", "skills/skills.json"]
 
 [tool.ruff]
 line-length = 160

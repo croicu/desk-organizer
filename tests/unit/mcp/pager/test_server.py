@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from geo_organizer.mcp.pager import server
+from desk_organizer.mcp.pager import server
 
 
 class FakeClient:

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from geo_organizer.mcp.pager.config import PagerConfig
-from geo_organizer.mcp.pager.ntfy import NtfyClient
+from desk_organizer.mcp.pager.config import PagerConfig
+from desk_organizer.mcp.pager.ntfy import NtfyClient
 
 
 @dataclass

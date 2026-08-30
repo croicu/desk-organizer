@@ -4,8 +4,8 @@ import json
 
 import pytest
 
-from geo_organizer.errors import TaskError
-from geo_organizer.settings import Settings
+from desk_organizer.errors import TaskError
+from desk_organizer.settings import Settings
 
 
 def _write(path, payload: dict) -> None:

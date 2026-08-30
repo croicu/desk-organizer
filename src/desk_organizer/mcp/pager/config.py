@@ -4,10 +4,10 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from geo_organizer.settings import Settings
+from desk_organizer.settings import Settings
 
 DEFAULT_SERVER = "https://ntfy.sh"
-DEFAULT_TITLE = "Claude Code"
+DEFAULT_TITLE = "desk-organizer"
 
 _SETTINGS_PATH = Path("./settings.json")
 _LOCAL_SETTINGS_PATH = Path("./settings.local.json")
@@ -34,8 +34,8 @@ class PagerConfig:
         ntfy_payload = Settings.section("ntfy", path=settings_path, local_path=local_settings_path)
 
         # Env vars are a per-process override on top of settings.json, not the primary source —
-        # settings.json is what's uniform across the geo-family repos, an env var is a one-off
-        # local tweak (e.g. testing against a throwaway topic without editing a tracked file).
+        # settings.json is what's uniform across consumer repos, an env var is a one-off local
+        # tweak (e.g. testing against a throwaway topic without editing a tracked file).
         topic = env.get("NTFY_TOPIC") or ntfy_payload.get("topic")
         if not topic:
             raise PagerConfigError(

@@ -126,7 +126,7 @@ class Settings:
     def section(cls, name: str, path: Path = _SETTINGS_PATH, local_path: Path = _LOCAL_PATH) -> dict:
         """Returns one named top-level section of settings.json (merged with
         settings.local.json's override), e.g. the pager MCP server's own 'ntfy' section.
-        settings.json's shape is uniform across the geo-family repos, so this is the public
+        settings.json's shape is uniform across consumer repos, so this is the public
         entry point for a caller outside this module to reach its own section without knowing
         how the file is read or merged — that stays encapsulated in _load_payload()."""
         settings_payload = cls._load_payload(path, local_path)

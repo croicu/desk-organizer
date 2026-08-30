@@ -5,7 +5,7 @@
       "name": "Python: Run (CLI)",
       "type": "debugpy",
       "request": "launch",
-      "module": "geo_organizer.cli",
+      "module": "desk_organizer.cli",
       "args": [],
       "console": "integratedTerminal",
       "justMyCode": true

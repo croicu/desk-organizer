@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from geo_organizer.mcp.pager.config import DEFAULT_SERVER, DEFAULT_TITLE, PagerConfig, PagerConfigError
+from desk_organizer.mcp.pager.config import DEFAULT_SERVER, DEFAULT_TITLE, PagerConfig, PagerConfigError
 
 
 def _write_settings(path: Path, payload: dict) -> None:

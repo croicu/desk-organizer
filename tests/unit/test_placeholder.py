@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from geo_organizer.cli import main
+from desk_organizer.cli import main
 
 SETTINGS_PATH = Path(__file__).parent.parent / "data" / "settings.json"
 

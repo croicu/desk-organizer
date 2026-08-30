@@ -8,7 +8,7 @@ from .config import PagerConfig
 from .ntfy import NtfyClient
 
 # The stdio transport this server runs over reserves stdout for the MCP JSON-RPC stream —
-# anything else written there corrupts the protocol. geo_organizer.diagnostics.ConsoleLogSink
+# anything else written there corrupts the protocol. desk_organizer.diagnostics.ConsoleLogSink
 # prints to stdout by design, so it's the wrong sink for this process; stdlib logging propagates
 # to the root logger that mcp.run() configures with a stderr handler instead (see
 # mcp.server.mcpserver.utilities.logging.configure_logging).
