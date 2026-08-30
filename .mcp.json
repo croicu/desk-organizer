@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "pager": {
+      "type": "stdio",
+      "command": "geo-pager",
+      "args": [],
+      "env": {}
+    }
+  }
+}

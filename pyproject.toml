@@ -14,11 +14,17 @@ dependencies = [
 
 [project.scripts]
 geo-organizer = "geo_organizer.cli:main"
+geo-pager = "geo_organizer.mcp.pager.server:main"
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.3",
     "ruff>=0.11",
+    "geo-organizer[pager]",
+]
+pager = [
+    "mcp>=2,<3",
+    "requests>=2.31",
 ]
 
 [tool.ruff]

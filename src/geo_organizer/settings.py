@@ -21,14 +21,11 @@ class Settings:
 
     _instance: ClassVar[Settings | None] = None
 
-    @classmethod
-    def load(cls, path: Path = _SETTINGS_PATH, local_path: Path = _LOCAL_PATH) -> Settings:
-        debug = False
-        log_level = TelemetryLevel.ERROR
-        log_categories: list[str] = []
-        excluded_categories: list[str] = []
-        expand_categories = False
-
+    @staticmethod
+    def _load_payload(path: Path, local_path: Path) -> dict:
+        """Reads settings.json's 'settings' object, with settings.local.json's own 'settings'
+        object overriding it key-by-key. Private to the class — section() is the public way for
+        a caller outside Settings to reach a section of the merged file."""
         settings_payload: dict = {}
 
         if path.exists():
@@ -48,6 +45,18 @@ class Settings:
                 local_settings = local_payload.get("settings", {})
                 if isinstance(local_settings, dict):
                     settings_payload.update(local_settings)
+
+        return settings_payload
+
+    @classmethod
+    def load(cls, path: Path = _SETTINGS_PATH, local_path: Path = _LOCAL_PATH) -> Settings:
+        debug = False
+        log_level = TelemetryLevel.ERROR
+        log_categories: list[str] = []
+        excluded_categories: list[str] = []
+        expand_categories = False
+
+        settings_payload = cls._load_payload(path, local_path)
 
         if settings_payload:
             debug = bool(settings_payload.get("debug", False))
@@ -112,3 +121,16 @@ class Settings:
         if cls._instance is None:
             raise RuntimeError("Settings.load() must be called first.")
         return cls._instance
+
+    @classmethod
+    def section(cls, name: str, path: Path = _SETTINGS_PATH, local_path: Path = _LOCAL_PATH) -> dict:
+        """Returns one named top-level section of settings.json (merged with
+        settings.local.json's override), e.g. the pager MCP server's own 'ntfy' section.
+        settings.json's shape is uniform across the geo-family repos, so this is the public
+        entry point for a caller outside this module to reach its own section without knowing
+        how the file is read or merged — that stays encapsulated in _load_payload()."""
+        settings_payload = cls._load_payload(path, local_path)
+        section_payload = settings_payload.get(name, {})
+        if not isinstance(section_payload, dict):
+            raise TaskError(f"'settings.{name}' in settings.json must be a JSON object.")
+        return section_payload
