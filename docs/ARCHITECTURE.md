@@ -94,6 +94,14 @@ than one place.
 
 <!-- One entry per module under src/desk_organizer/: what it owns, what it depends on. -->
 
+- **`mcp/pager/`** — the `pager` MCP server (`desk-pager` console script). `config.py`'s
+  `PagerConfig.load` reads the `ntfy` section via `Settings.section` (settings.json's public
+  entry point for a caller outside `settings.py`, see `CLAUDE.md`'s Coding Style rules); `ntfy.py`'s
+  `NtfyClient` posts to the ntfy.sh HTTP API; `server.py` registers the `notify`/`notify_debug`
+  tools (see `docs/PROTOCOL.md` for the full tool contract) and owns the stdout/stderr split the
+  stdio transport requires. Depends on `settings.py` only — no dependency on `cli.py` or the
+  skills/agents side of this repo.
+
 ## Data flow
 
 <!-- How data enters, gets transformed, and leaves the system. -->

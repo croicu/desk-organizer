@@ -16,6 +16,8 @@ _logger = logging.getLogger(__name__)
 
 mcp = MCPServer("pager")
 
+_debugpy_listening = False
+
 
 @mcp.tool()
 def notify(message: str, title: str | None = None, priority: int = 3) -> str:
@@ -43,6 +45,29 @@ def notify(message: str, title: str | None = None, priority: int = 3) -> str:
         _logger.info("pager: notification sent")
 
     return result
+
+
+@mcp.tool()
+def notify_debug(message: str, title: str | None = None, priority: int = 3) -> str:
+    """Same as notify(), except it blocks until a debugger attaches to this process (VS Code's
+    "Python: Attach to desk-pager", port 5678) before sending. Use ONLY when the user has
+    explicitly asked to debug the pager or hit a breakpoint in notify() — never for a normal
+    page, since this call hangs until a debugger attaches. Set a breakpoint in notify() first,
+    then call this; attaching resumes it straight into notify()'s body.
+    """
+    global _debugpy_listening
+
+    import debugpy
+
+    if not _debugpy_listening:
+        # listen() is a one-time bind — the module-level flag keeps a second notify_debug() call
+        # in the same process from trying to rebind an already-open port.
+        debugpy.listen(5678)
+        _debugpy_listening = True
+
+    debugpy.wait_for_client()
+
+    return notify(message, title, priority)
 
 
 def main() -> None:
