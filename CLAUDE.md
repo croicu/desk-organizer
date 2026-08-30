@@ -57,6 +57,22 @@ protocol below applies depends on which repo you're in.
    should do about it.
 2. Append a row to `ADDENDUM.md`'s table (timestamp, title, filename).
 
+### Porting an instance's improvement back to `tpl-py` (applies in an instance)
+
+The addendum protocol above is one-directional — `tpl-py` pushing a change out to instances. This
+is the reverse channel: when a change made *in an instance* touches a **template-inherited
+artifact** (a class this repo started with from `tpl-py`'s scaffolding, e.g. `settings.py`'s
+`Settings` or `diagnostics.py`'s `Logger`; or a markdown file `tpl-py` itself authors, e.g. this
+file or `ADDENDUM.md`'s structure) and the change is generalizable rather than specific to this
+repo's own domain, open an issue in `croicu/tpl-py` (`gh issue create --repo croicu/tpl-py`)
+describing the change and cross-linking back to the commit/PR here, so `tpl-py` can decide whether
+to adopt it and, if so, write its own addendum entry per "Writing an addendum entry" above. Not
+every edit to a template-inherited file qualifies — a one-off tweak that only makes sense in this
+repo's own context doesn't need a backport issue, only a fix, convention, or reusable pattern that
+would generalize to other instances too. See the "Completed Tasks" section below (issues #3–#6)
+for worked examples of this same pattern sourced from other instances (`quant-scratch`,
+`quant-data`).
+
 ## Cross-Repo Coordination
 
 Not every instance needs this section — add it (or an adapted version of it) once this repo has a
@@ -247,6 +263,7 @@ pytest tests/unit/test_foo.py::test_bar   # single test
 - **Import count as SRP signal** — more than 5–10 imports in a file is a hint that the file may be doing too much. Not a hard rule, but worth pausing to consider whether responsibilities should be split.
 - **Don't build a DI factory/composition-root prematurely** — the same wait-for-evidence judgment as the import-count signal applies to DI wiring. A function picking up its second or third injectable parameter (e.g. `main(argv, provider=None, settings_path=None)`) is not yet a smell; extracting a shared factory/helper from a single data point risks guessing at the wrong abstraction shape. Wait for real duplication — a second call site needing the same wiring, or a parameter list that's genuinely grown unwieldy — before extracting one.
 - **Specific settings override generic ones on scope overlap** — when two configuration knobs can both influence the same outcome, the more specific/targeted one wins wherever they'd otherwise disagree, not the more generic/blanket one; the generic one only falls back into play when the specific one was left at its implicit default. Origin case: `settings.json`'s `logLevel` (a targeted verbosity control) vs. `debug` (a blanket flag) both used to influence the console log-category default, with `debug` winning outright — so setting `logLevel: "verbose"` alone did nothing, silently muted by `debug`'s separate default (see the Logging section above for the resulting behavior). Apply this whenever a new settings key's effect could overlap with an existing broader flag's — don't let a coarse toggle silently override an explicit, narrower setting the user actually configured.
+- **Prefer a static/class method over a module-level function when it conceptually belongs to a class** — if a function's job is really about one class's own data or responsibility (parsing the file format that class owns, a helper only that class's methods call), attach it to the class as a `@staticmethod`/`@classmethod` rather than leaving it as a same-module function sitting beside the class. A dangling module-level function reads as either free-standing utility code or, worse, gets imported directly by outside callers, leaking an implementation detail the class was supposed to encapsulate. Origin case: `settings.py`'s `Settings._load_payload` (the `settings.json`/`settings.local.json` merge) started as a free function beside `Settings`, got imported directly by `mcp/pager/config.py`, and was pulled inside the class as a private `@staticmethod` once that direct import was flagged as reaching past `Settings`'s own public surface (`Settings.section()`) into its internals.
 
 ## New Task
 
