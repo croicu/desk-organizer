@@ -37,7 +37,7 @@ design principles.
 ## Template Sync
 
 - **Source**: [croicu/tpl-py](https://github.com/croicu/tpl-py)
-- **Synced to**: 2026-07-30T12:00:01Z (set by `tasks/repo_setup.md` at instantiation time; left
+- **Synced to**: 2026-08-30T19:00:00Z (set by `tasks/repo_setup.md` at instantiation time; left
   unset in `tpl-py`'s own master copy of this file, since the source has nothing to sync
   against)
 
