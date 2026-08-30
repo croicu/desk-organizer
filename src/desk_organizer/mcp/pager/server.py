@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import os
 
 from mcp.server.mcpserver import MCPServer
 
@@ -16,6 +15,8 @@ from .ntfy import NtfyClient
 _logger = logging.getLogger(__name__)
 
 mcp = MCPServer("pager")
+
+_debugpy_listening = False
 
 
 @mcp.tool()
@@ -46,17 +47,30 @@ def notify(message: str, title: str | None = None, priority: int = 3) -> str:
     return result
 
 
-def main() -> None:
-    if os.environ.get("DESK_PAGER_DEBUGPY") == "1":
-        # Opt-in only: this process is normally launched by the MCP host (Claude Code), not by a
-        # debugger, so there's nothing to attach to unless explicitly requested. Blocks startup
-        # until VS Code's "Python: Attach to desk-pager" config attaches, so the very first tool
-        # call — not just a later one — can hit a breakpoint.
-        import debugpy
+@mcp.tool()
+def notify_debug(message: str, title: str | None = None, priority: int = 3) -> str:
+    """Same as notify(), except it blocks until a debugger attaches to this process (VS Code's
+    "Python: Attach to desk-pager", port 5678) before sending. Use ONLY when the user has
+    explicitly asked to debug the pager or hit a breakpoint in notify() — never for a normal
+    page, since this call hangs until a debugger attaches. Set a breakpoint in notify() first,
+    then call this; attaching resumes it straight into notify()'s body.
+    """
+    global _debugpy_listening
 
+    import debugpy
+
+    if not _debugpy_listening:
+        # listen() is a one-time bind — the module-level flag keeps a second notify_debug() call
+        # in the same process from trying to rebind an already-open port.
         debugpy.listen(5678)
-        debugpy.wait_for_client()
+        _debugpy_listening = True
 
+    debugpy.wait_for_client()
+
+    return notify(message, title, priority)
+
+
+def main() -> None:
     mcp.run()
 
 

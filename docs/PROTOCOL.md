@@ -6,6 +6,27 @@ CLI signature and file format schemas for `desk-organizer`.
 
 <!-- Command name, arguments, flags, exit codes. -->
 
+## MCP servers
+
+### `pager` (`desk-pager`)
+
+An ntfy.sh-backed paging server. Reads its config from `settings.json`/`settings.local.json`'s
+`ntfy` section (see `PagerConfig.load` in `src/desk_organizer/mcp/pager/config.py`) — `topic`
+required, `server`/`defaultTitle` optional, each overridable by an `NTFY_*` environment variable.
+
+- **`notify(message, title=None, priority=3) -> str`** — sends a push notification. Returns
+  `"notify sent"` on success or `"notify failed: <reason>"` on any failure (missing config, a bad
+  `settings.json`, or the HTTP request itself failing) — never raises, so a failed page can't crash
+  the caller's session.
+- **`notify_debug(message, title=None, priority=3) -> str`** — identical to `notify`, except it
+  first opens a `debugpy` listener on port 5678 (once per process — a module-level flag guards
+  against rebinding an already-open port on a second call) and blocks until a debugger attaches
+  before delegating to `notify`. Exists so a breakpoint in `notify`'s own body can catch a real,
+  live call's arguments — see `README.md`'s "Debugging an MCP server" section for the actual
+  workflow. Deliberately non-blocking at server *startup* (unlike an earlier iteration of this
+  tool): blocking there raced the MCP host's own connection-handshake timeout, which killed the
+  process before a human had time to attach.
+
 ## File formats
 
 <!-- Schemas for any files this project reads or writes. -->
